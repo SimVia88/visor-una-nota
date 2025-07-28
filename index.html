@@ -34,7 +34,17 @@
     .estrellas {
       font-size: 6vw;
       letter-spacing: 0.5vw;
-      color: #FFD700;
+      display: flex;
+    }
+
+    .estrella {
+      color: #FFD700; /* Estrella dorada */
+      text-shadow: 0 0 1px #000; /* contorno negro */
+    }
+
+    .estrella.vacia {
+      color: #fff;
+      text-shadow: 0 0 1px #000; /* contorno negro */
     }
 
     @media (max-width: 600px) {
@@ -51,7 +61,7 @@
 <body>
   <div class="contenedor">
     <div class="valor" id="notaTexto">Nota: 0</div>
-    <div class="estrellas" id="estrellas">☆☆☆☆☆</div>
+    <div class="estrellas" id="estrellas"></div>
   </div>
 
   <script>
@@ -61,15 +71,35 @@
     }
 
     function renderEstrellas(valor) {
+      const estrellasDiv = document.getElementById("estrellas");
+      estrellasDiv.innerHTML = ""; // Limpia
+
       const llenas = Math.floor(valor);
       const decimal = valor - llenas;
-      const media = decimal >= 0.75 ? '★' : decimal >= 0.25 ? '⯪' : '';
-      return '★'.repeat(llenas) + media + '☆'.repeat(5 - llenas - (media ? 1 : 0));
+      const media = decimal >= 0.75 ? 1 : decimal >= 0.25 ? 0.5 : 0;
+
+      for (let i = 1; i <= 5; i++) {
+        const span = document.createElement("span");
+        span.classList.add("estrella");
+
+        if (i <= llenas) {
+          span.textContent = "★";
+        } else if (i === llenas + 1 && media === 0.5) {
+          span.textContent = "⯪"; // media estrella
+        } else if (i === llenas + 1 && media === 1) {
+          span.textContent = "★";
+        } else {
+          span.textContent = "☆";
+          span.classList.add("vacia");
+        }
+
+        estrellasDiv.appendChild(span);
+      }
     }
 
     const nota = getParametro('nota');
     document.getElementById("notaTexto").textContent = `Nota: ${nota.toFixed(1)}`;
-    document.getElementById("estrellas").textContent = renderEstrellas(nota);
+    renderEstrellas(nota);
   </script>
 </body>
 </html>
