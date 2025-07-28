@@ -60,7 +60,7 @@
 </head>
 <body>
   <div class="contenedor">
-    <div class="valor" id="notaTexto">Calificación: 0</div>
+    <div class="valor" id="notaTexto">Nota: 0</div>
     <div class="estrellas" id="estrellas"></div>
   </div>
 
@@ -98,7 +98,7 @@
     }
 
     const nota = getParametro('nota');
-    document.getElementById("notaTexto").textContent = `Nota: ${nota.toFixed(1)}`;
+    document.getElementById("notaTexto").textContent = `Calificación: ${nota.toFixed(1)}`;
     renderEstrellas(nota);
   </script>
 </body>
