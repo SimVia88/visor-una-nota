@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Nota</title>
+  <title>Nota de Satisfacción</title>
   <style>
     html, body {
       margin: 0;
@@ -11,78 +11,65 @@
       background-color: transparent;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       height: 100%;
-      width: 100%;
       overflow: hidden;
+    }
+
+    .contenedor {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      padding: 20px;
+      height: 100%;
+      box-sizing: border-box;
     }
 
-    .visor {
-      text-align: center;
-      background: rgba(255, 255, 255, 0.85);
-      border-radius: 20px;
-      padding: 30px 40px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      max-width: 90vw;
-    }
-
-    .nota {
-      font-size: min(16vw, 80px);
+    .valor {
+      font-size: 4vw;
       font-weight: bold;
-      color: #333;
       margin-bottom: 10px;
+      color: #333;
     }
 
     .estrellas {
-      font-size: min(12vw, 60px);
-      letter-spacing: 4px;
+      font-size: 6vw;
+      letter-spacing: 0.5vw;
       color: #FFD700;
+    }
+
+    @media (max-width: 600px) {
+      .valor {
+        font-size: 7vw;
+      }
+      .estrellas {
+        font-size: 10vw;
+        letter-spacing: 1vw;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="visor">
-    <div class="nota" id="nota">0.0</div>
+  <div class="contenedor">
+    <div class="valor" id="notaTexto">Nota: 0</div>
     <div class="estrellas" id="estrellas">☆☆☆☆☆</div>
   </div>
 
   <script>
-    function obtenerNotaDesdeURL() {
+    function getParametro(nombre) {
       const params = new URLSearchParams(window.location.search);
-      const nota = parseFloat(params.get("nota"));
-      return isNaN(nota) ? 0 : Math.min(5, Math.max(0, nota));
+      return parseFloat(params.get(nombre)) || 0;
     }
 
     function renderEstrellas(valor) {
       const llenas = Math.floor(valor);
       const decimal = valor - llenas;
-      const mediaEstrella = decimal >= 0.75 ? '★' : decimal >= 0.25 ? '⯪' : '';
-      return '★'.repeat(llenas) + mediaEstrella + '☆'.repeat(5 - llenas - (mediaEstrella ? 1 : 0));
+      const media = decimal >= 0.75 ? '★' : decimal >= 0.25 ? '⯪' : '';
+      return '★'.repeat(llenas) + media + '☆'.repeat(5 - llenas - (media ? 1 : 0));
     }
 
-    function animarNota(el, final) {
-      let actual = 0;
-      const pasos = 60;
-      const incremento = final / pasos;
-      const duracion = 800 / pasos;
-
-      const intervalo = setInterval(() => {
-        actual += incremento;
-        if (actual >= final) {
-          actual = final;
-          clearInterval(intervalo);
-        }
-        el.textContent = actual.toFixed(1);
-      }, duracion);
-    }
-
-    const nota = obtenerNotaDesdeURL();
-    const elNota = document.getElementById("nota");
-    const elEstrellas = document.getElementById("estrellas");
-
-    animarNota(elNota, nota);
-    elEstrellas.textContent = renderEstrellas(nota);
+    const nota = getParametro('nota');
+    document.getElementById("notaTexto").textContent = `Nota: ${nota.toFixed(1)}`;
+    document.getElementById("estrellas").textContent = renderEstrellas(nota);
   </script>
 </body>
 </html>
